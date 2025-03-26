@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SecurePay - QR Payment App</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.1/build/qrcode.min.js"></script>
+    <script src="https://rawgit.com/schmich/instascan-builds/master/instascan.min.js"></script>
+</head>
+<body>
+    <div class="app-container">
+        <header class="app-header">
+            <h1>SecurePay</h1>
+            <div class="user-info">
+                <span id="username">Welcome, User</span>
+                <button id="logout-btn">Logout</button>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <div class="payment-section">
+                <h2>Create Payment</h2>
+                <div class="form-group">
+                    <label for="amount">Amount</label>
+                    <input type="number" id="amount" min="0.01" step="0.01" placeholder="0.00">
+                    <div class="error-message" id="amount-error"></div>
+                </div>
+                <div class="form-group">
+                    <label for="currency">Currency</label>
+                    <select id="currency">
+                        <option value="USD">USD ($)</option>
+                        <option value="EUR">EUR (€)</option>
+                        <option value="GBP">GBP (£)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="description">Description</label>
+                    <input type="text" id="description" placeholder="Payment for...">
+                    <div class="error-message" id="description-error"></div>
+                </div>
+                <button id="generate-btn" class="btn-primary">Generate QR Code</button>
+            </div>
+
+            <div class="qr-section">
+                <h2>Payment QR Code</h2>
+                <div class="qr-container">
+                    <canvas id="qr-canvas"></canvas>
+                </div>
+                <div class="qr-info">
+                    <p>Amount: <span id="qr-amount">--</span></p>
+                    <p>Expires in: <span id="qr-expiry">--</span></p>
+                </div>
+                <button id="refresh-btn" class="btn-secondary" disabled>Refresh QR</button>
+            </div>
+
+            <div class="scan-section">
+                <h2>Scan to Pay <i class="fas fa-qrcode"></i></h2>
+                <div class="scanner-container">
+                    <div class="scanner-placeholder" id="scanner-placeholder">
+                        <i class="fas fa-camera"></i>
+                        <p>Scanner will appear here</p>
+                    </div>
+                    <video id="scanner" width="300" height="200" style="display:none;"></video>
+                    <div class="scanner-controls">
+                        <select id="camera-select" style="display:none;">
+                            <option value="">Select Camera</option>
+                        </select>
+                    </div>
+                    <div id="scan-result" class="scan-result"></div>
+                </div>
+                <div class="scanner-actions">
+                    <button id="start-scan" class="btn-primary"><i class="fas fa-play"></i> Start Scanner</button>
+                    <button id="stop-scan" class="btn-secondary" disabled><i class="fas fa-stop"></i> Stop Scanner</button>
+                </div>
+            </div>
+
+            <div class="transactions-section">
+                <h2>Transaction History <i class="fas fa-history"></i></h2>
+                <div class="transactions-header">
+                    <span>Showing last <select id="txn-limit">
+                        <option value="5">5</option>
+                        <option value="10" selected>10</option>
+                        <option value="20">20</option>
+                        <option value="50">50</option>
+                    </select> transactions</span>
+                    <button id="refresh-txn" class="btn-icon" title="Refresh"><i class="fas fa-sync-alt"></i></button>
+                </div>
+                <div class="transactions-list" id="transactions-list">
+                    <!-- Transactions will be loaded here -->
+                </div>
+            </div>
+        </main>
+
+        <div class="modal" id="confirm-modal">
+            <div class="modal-content">
+                <h3>Confirm Payment</h3>
+                <p>You are about to send <span id="confirm-amount">--</span> to <span id="confirm-merchant">--</span></p>
+                <div class="modal-actions">
+                    <button id="confirm-btn" class="btn-primary">Confirm</button>
+                    <button id="cancel-btn" class="btn-secondary">Cancel</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="loading-overlay" id="loading-overlay">
+            <div class="loading-spinner"></div>
+            <div class="loading-text">Processing...</div>
+        </div>
+
+        <div class="toast" id="toast"></div>
+    </div>
+
+    <script type="module" src="app.js"></script>
+</body>
+</html>
